@@ -72,7 +72,7 @@ graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
 
 image_comparison(
-    img1=image2,
+    img1=image,
     img2=graph_as_image,
     label1="Original P&ID",
     label2="Graph Overlay",

@@ -15,7 +15,7 @@ from helpers import *
 from qa_system import *
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
-
+import base64
 def set_bg_hack(main_bg):
     '''
     A function to unpack an image from root folder and set as bg.

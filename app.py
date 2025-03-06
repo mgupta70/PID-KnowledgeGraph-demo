@@ -50,7 +50,6 @@ graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 ## Display Images
 #####################
 annotated_text("Use the ", ("slider", ""), " to compare the original P&ID with the graph overlay.")
-st.write("Use the slider to compare the original P&ID with the graph overlay.")
 image_comparison(
     img1=image,
     img2=graph_as_image,
@@ -101,10 +100,10 @@ sample_questions = ["What is total number of class 10 symbols?",
              ]
 
 # Let the user select or enter a custom question
-user_question = st.selectbox("See example questions or enter your own:", ["Enter a new question..."] + sample_questions)
+user_question = st.selectbox("See example questions or enter your own:", ["I want to a add a question"] + sample_questions)
 
 # If the user selects "Enter a new question...", show a text input field
-if user_question == "Enter a new question...":
+if user_question == "I want to a add a question":
     user_question = st.text_input("Enter your question:")
 
 if user_question:
@@ -121,7 +120,11 @@ if user_question:
     try:
         result = run_query(cypher_generated, pidKG)
         output_text = "\n".join(str(record) for record in result)
-        st.text_area("Query Results", output_text, height=100)
+        if output_text is not None:
+            st.text_area("Query Results", output_text, height=100)
+        else:
+            output_text = "Maybe the question is out-of-scope. If you think the question is valid, please try rephrasing it."
+            st.text_area("Query Results", output_text, height=100)
     except Exception as e:
         output_text = "Please try another question."
         st.write("Query Results", output_text, height=100)

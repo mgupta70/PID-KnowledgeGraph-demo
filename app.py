@@ -137,5 +137,7 @@ if user_question:
     # st.text_area("Query Results", output_text, height=100)
 
 
-
+st.markdown("""
+        <h10 style="text-align: center; position: fixed; bottom: 3rem;">Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo"> Github</a> </h10>""",
+        unsafe_allow_html=True)
     

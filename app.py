@@ -171,11 +171,12 @@ def run_query(query, session):
 ##########################
 # get question from user
 ##########################
-st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
+st.write("This is a Question Answering System for P&ID (Piping and Instrumentation Diagram) graphs.")
+st.write("The P&ID linked above contains 32 symbols, each labeled numerically from 1 to 32.")
 with st.expander("For more info on symbols representation - Click here"):
     st.image('media/one_shot_symbols.png')
     
-st.write("Try asking questions related to counting or connections between symbols.")
+st.write("Try asking questions related to counting or connections between symbols. While asking question ensure that you use the class number of the symbols as their names.")
 
 
 questions = ["What is total number of class 10 symbols?", 

@@ -72,6 +72,8 @@ graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 image_comparison(
     img1=image,
     img2=graph_as_image,
+    label1="Original P&ID",
+    label2="Graph Overlay",
 )
 
 
@@ -116,7 +118,7 @@ The relationships:
 """
 
 
-questions = ["What is total number of class 10 symbols?", "How many 10 with 2?"]
+
 
 # No graph schema
 cypher_generating_model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0) # most-deterministic 
@@ -170,7 +172,14 @@ def run_query(query, session):
 # get question from user
 # user_question = st.text_input("Enter your question: ")
 st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
+with st.expander('Select a sensor to analyse. For more information - Click here'):
+    st.image('media/KG_networkx.png', caption='Sensor Information')
+    
 st.write("Try asking questions related to counting or connections between symbols.")
+
+
+
+
 questions = ["What is total number of class 10 symbols?", 
              "Count the number of 10 symbols that are directly connected to 18 symbols",
              "Are class 11 and class 28 symbols connected to one another?.", 

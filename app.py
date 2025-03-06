@@ -16,6 +16,13 @@ from qa_system import *
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
 import base64
+#############
+## Page Set up
+#############
+st.set_page_config(page_title="PIDQA")
+st.title("P&ID QA System")
+
+
 def set_bg_hack(main_bg):
     '''
     A function to unpack an image from root folder and set as bg.
@@ -42,11 +49,6 @@ def set_bg_hack(main_bg):
 set_bg_hack("media/KG_neo4j.png")
 
 
-#############
-## Page Set up
-#############
-st.set_page_config(page_title="PIDQA")
-st.title("P&ID QA System")
 
 #############
 ## Load data

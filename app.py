@@ -31,38 +31,39 @@ nodes_dict = load_pickle(nodes_path)
 from neo4j import GraphDatabase
 # Step-1: make connection to database
 # database credentials
+
 uri = st.secrets["neo4j_uri"]
 user = st.secrets["neo4j_user"]
 password = st.secrets["neo4j_password"]
 data_base_connection = GraphDatabase.driver(uri = uri, auth = (user, password)) 
 pidKG = data_base_connection.session() 
 
-# Step-2: create nodes
-nodes_to_add = []
-for edge, node_pair in edges_dict.items():
-    for node in node_pair:
-        if node not in nodes_to_add:
-            if node.startswith('J'):
-                node_type = 'Junction'
-            else:
-                node_type = 'Symbol'
-            center_x, center_y = node_center(node, nodes_dict)
-            _, class_name, tag = nodes_dict[node]
-            pidKG.run(
-                f"CREATE (n:{node_type} {{class: {class_name}, tag: '{tag}', center_x: {center_x}, center_y: {center_y}, alias: '{node}'}})"
-            )
-            nodes_to_add.append(node)
+# # Step-2: create nodes
+# nodes_to_add = []
+# for edge, node_pair in edges_dict.items():
+#     for node in node_pair:
+#         if node not in nodes_to_add:
+#             if node.startswith('J'):
+#                 node_type = 'Junction'
+#             else:
+#                 node_type = 'Symbol'
+#             center_x, center_y = node_center(node, nodes_dict)
+#             _, class_name, tag = nodes_dict[node]
+#             pidKG.run(
+#                 f"CREATE (n:{node_type} {{class: {class_name}, tag: '{tag}', center_x: {center_x}, center_y: {center_y}, alias: '{node}'}})"
+#             )
+#             nodes_to_add.append(node)
             
-# Step-3: create edges
-# Note: this step could be combined with the Step-2. But there can be chances that some nodes are not created and
-# we are trying to create edges between them. So, it is better to create nodes first and then create edges.
+# # Step-3: create edges
+# # Note: this step could be combined with the Step-2. But there can be chances that some nodes are not created and
+# # we are trying to create edges between them. So, it is better to create nodes first and then create edges.
 
-for edge, node_pair in edges_dict.items():
-    node1, node2 = node_pair
-    pidKG.run(
-        "MATCH (n1), (n2) WHERE n1.alias = $n1_alias AND n2.alias = $n2_alias CREATE (n1)-[:CONNECTED_TO]->(n2)",
-        n1_alias=node1, n2_alias=node2
-    )
+# for edge, node_pair in edges_dict.items():
+#     node1, node2 = node_pair
+#     pidKG.run(
+#         "MATCH (n1), (n2) WHERE n1.alias = $n1_alias AND n2.alias = $n2_alias CREATE (n1)-[:CONNECTED_TO]->(n2)",
+#         n1_alias=node1, n2_alias=node2
+#     )
 
 # Note: directions above are arbitrary because arrows are not shown on the given P&ID. 
 # However, Neo4j requires a direction for each edge so we have chosen an arbitrary direction.

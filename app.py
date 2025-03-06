@@ -127,14 +127,17 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 
 )
 
-for q in questions:
-    selected_fewshot_examples = example_selector.select_examples({"question": q})
-    
-    messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
-                SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
-                HumanMessage(f"{q}")]
-    cypher_generated = cypher_generating_model(messages).content #.strip()
-    print(cypher_generated)
-    st.write(cypher_generated)
+# get question from user
+user_question = st.text_input("Enter your question: ")
+
+
+selected_fewshot_examples = example_selector.select_examples({"question": user_question})
+
+messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
+            SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
+            HumanMessage(f"{user_question}")]
+cypher_generated = cypher_generating_model(messages).content #.strip()
+print(cypher_generated)
+st.write(cypher_generated)
     
     

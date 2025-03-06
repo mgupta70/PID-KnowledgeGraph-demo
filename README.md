@@ -7,7 +7,8 @@ This repository provides a minimal demo of **Retrieval-Augmented Generation (RAG
 
 ## Process Overview  
 The included **RAG process image** visually represents how retrieval and generation interact to produce informed responses. 
-![rag](./media/RAG.png) 
+<!-- ![rag](./media/RAG.png)  -->
+<img src="./media/RAG.png" alt="rag" width="500" />
 
 Step1: User asks a question
 Step2: LLM converts the user question into a SQL/Cypher syntax

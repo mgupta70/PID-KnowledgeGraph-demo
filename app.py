@@ -136,9 +136,10 @@ def run_query(query, session):
 
 # get question from user
 # user_question = st.text_input("Enter your question: ")
-
+st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
+st.write("Try asking questions related to counting or connections between symbols.")
 questions = ["What is total number of class 10 symbols?", 
-          "Are class 11 and class 8 symbols connected to one another?.", 
+          "Are class 11 and class 28 symbols connected to one another?.", 
           "What are the tags of class 12 symbols?"]
 
 # Let the user select or enter a custom question
@@ -159,8 +160,7 @@ if user_question:
 
     
 
-    st.write(f"User query converted to: {cypher_generated}.")
-    st.write("Results:")
+    st.write(f"User query converted to: {cypher_generated}")
     # run query
     
     result = run_query(cypher_generated, pidKG)

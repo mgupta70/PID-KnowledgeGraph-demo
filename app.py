@@ -15,6 +15,10 @@ from langchain_openai import OpenAIEmbeddings
 from streamlit_image_comparison import image_comparison
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
+
+st.set_page_config(page_title="PIDQA")
+st.title("P&ID QA System")
+
 #############
 ## Load data
 #############
@@ -33,17 +37,41 @@ edges_dict = load_pickle(edges_path)
 nodes_path = Path('data/0_refined_nodes_dict.pkl')
 nodes_dict = load_pickle(nodes_path)
 
-col1, col2 = st.columns(2)
-with col1:
-    st.image(image, caption='Original P&ID')
-with col2:
-    nx_graph = cv2.imread('media/KG_networkx.png')
-    nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
-    nx_graph = cv2.flip(nx_graph, 0)
-    st.image(nx_graph, caption='Geometrically Aligned Graph using networkx')
+# col1, col2 = st.columns(2)
+# with col1:
+#     st.image(image, caption='Original P&ID')
+# with col2:
+#     nx_graph = cv2.imread('media/KG_networkx.png')
+#     nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
+#     nx_graph = cv2.flip(nx_graph, 0)
+#     st.image(nx_graph, caption='Geometrically Aligned Graph using networkx')
+
+######################
+## Overlay Graph
+######################
+graph_as_image = original_image.copy()
+for edge, node_pair in edges_dict.items():
+    node_1, node_2 = node_pair
+    x1, y1 = node_center(node_1, nodes_dict)
+    x2, y2 = node_center(node_2, nodes_dict)
+    # draw nodes as black circles
+    radius = 25  
+    fill_color = (0, 0, 255)
+    outline_color = (0, 0, 0) 
+    thickness = 5        
+    cv2.circle(graph_as_image, (int(x1), int(y1)), radius, fill_color, -1)
+    cv2.circle(graph_as_image, (int(x1), int(y1)), radius, outline_color, thickness)
+    cv2.circle(graph_as_image, (int(x2), int(y2)), radius, fill_color, -1)
+    cv2.circle(graph_as_image, (int(x2), int(y2)), radius, outline_color, thickness)
+    # draw edges 
+    cv2.line(graph_as_image, (int(x1), int(y1)), (int(x2), int(y2)), outline_color, thickness)
+graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
+graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
+
+
 image_comparison(
     img1=image,
-    img2=nx_graph,
+    img2=graph_as_image,
 )
 
 

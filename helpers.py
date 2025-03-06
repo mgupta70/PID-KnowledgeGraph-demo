@@ -22,8 +22,8 @@ def overlay_graph(image, edges_dict, nodes_dict):
         x2, y2 = node_center(node_2, nodes_dict)
         # draw nodes 
         radius = 25  
-        fill_color = (0, 0, 255)
-        outline_color = (0, 0, 0) 
+        fill_color = (255, 0, 0)
+        outline_color = (0, 255, 0) 
         thickness = 5        
         cv2.circle(image, (int(x1), int(y1)), radius, fill_color, -1)
         cv2.circle(image, (int(x1), int(y1)), radius, outline_color, thickness)

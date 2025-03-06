@@ -123,11 +123,12 @@ if user_question:
         if output_text is not None:
             st.text_area("Query Results", output_text, height=100)
         else:
-            output_text = "Maybe the question is out-of-scope. If you think the question is valid, please try rephrasing it."
+            output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
             st.text_area("Query Results", output_text, height=100)
     except Exception as e:
-        output_text = "Please try another question."
-        st.write("Query Results", output_text, height=100)
+        output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
+        st.text_area("Query Results", output_text, height=100)
+        
     # result = run_query(cypher_generated, pidKG)
     # output_text = "\n".join(str(record) for record in result)
     # st.text_area("Query Results", output_text, height=100)

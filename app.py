@@ -145,12 +145,15 @@ if user_question:
                 HumanMessage(f"{user_question}")]
     cypher_generated = cypher_generating_model(messages).content #.strip()
 
-    st.write(f"User query converted to: {cypher_generated}.\nResult:")
-
+    st.write(f"User query converted to: {cypher_generated}.")
+    st.write("Results:")
     # run query
+    
     result = run_query(cypher_generated, pidKG)
-    for record in result:
-        st.write(record)
+    output_text = "\n".join(str(record) for record in result)
+    st.text_area("Query Results", output_text, height=200)
+    # for record in result:
+    #     st.write(record)
 
 
 

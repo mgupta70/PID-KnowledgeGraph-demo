@@ -19,8 +19,8 @@ os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 #############
 # 1. Load image
 image_path = Path('data/0.jpg')
-image = cv2.imread(str(image_path))
-image = crop_image(image, 400, 5500, 400, 4200)
+original_image = cv2.imread(str(image_path))
+image = crop_image(original_image, 400, 5500, 400, 4200)
 image = (image > 200).astype(np.uint8)*255
 
 # 2. Load nodes and edges data
@@ -38,6 +38,7 @@ with col1:
 with col2:
     nx_graph = cv2.imread('media/KG_networkx.png')
     nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
+    nx_graph = cv2.flip(nx_graph, 0)
     st.image(nx_graph, caption='Geometrically Aligned Graph using networkx')
 
 

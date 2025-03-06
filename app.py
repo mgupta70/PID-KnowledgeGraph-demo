@@ -21,35 +21,7 @@ import base64
 #############
 st.set_page_config(page_title="PIDQA")
 st.title("P&ID QA System")
-
-
-def set_bg_hack(main_bg):
-    '''
-    A function to unpack an image from root folder and set as bg.
- 
-    Returns
-    -------
-    The background.
-    '''
-    # set bg name
-    main_bg_ext = "png"
-        
-    st.markdown(
-         f"""
-         <style>
-         .stApp {{
-             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
-             background-size: cover
-         }}
-         </style>
-         """,
-         unsafe_allow_html=True
-     )
-    
-set_bg_hack("media/KG_neo4j_h.png")
-
-
-
+# set_bg_hack("media/KG_neo4j_h.png")
 #############
 ## Load data
 #############
@@ -64,7 +36,6 @@ edges_dict = load_pickle(Path('data/0_refined_edges_dict.pkl'))
 
 # Nodes data
 nodes_dict = load_pickle(Path('data/0_refined_nodes_dict.pkl'))
-
 
 ######################
 ## Overlay Graph

@@ -70,7 +70,7 @@ for edge, node_pair in edges_dict.items():
 graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
 graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
-
+st.write("Use the slider to compare the original P&ID with the graph overlay.")
 image_comparison(
     img1=image,
     img2=graph_as_image,

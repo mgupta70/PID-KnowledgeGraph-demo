@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from pathlib import Path
 from neo4j import GraphDatabase
-from helpers import *
 from few_shot import examples
 import streamlit as st
 from langchain_community.graphs import Neo4jGraph 
@@ -13,62 +12,57 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import OpenAIEmbeddings
 from streamlit_image_comparison import image_comparison
+from helpers import *
+from qa_system import *
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
-
-
+#############
+## Page Set up
+#############
 st.set_page_config(page_title="PIDQA")
 st.title("P&ID QA System")
 
 #############
 ## Load data
 #############
-# 1. Load image
+# Image
 image_path = Path('data/0.jpg')
 original_image = cv2.imread(str(image_path))
 image = crop_image(original_image, 400, 5500, 400, 4200)
 image = (image > 200).astype(np.uint8)*255
 
+# Edges data
+edges_dict = load_pickle(Path('data/0_refined_edges_dict.pkl'))
 
-# 2. Load nodes and edges data
-# edges
-edges_path = Path('data/0_refined_edges_dict.pkl')
-edges_dict = load_pickle(edges_path)
+# Nodes data
+nodes_dict = load_pickle(Path('data/0_refined_nodes_dict.pkl'))
 
-# nodes
-nodes_path = Path('data/0_refined_nodes_dict.pkl')
-nodes_dict = load_pickle(nodes_path)
-
-# col1, col2 = st.columns(2)
-# with col1:
-#     st.image(image, caption='Original P&ID')
-# with col2:
-#     nx_graph = cv2.imread('media/KG_networkx.png')
-#     nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
-#     nx_graph = cv2.flip(nx_graph, 0)
-#     st.image(nx_graph, caption='Geometrically Aligned Graph using networkx')
 
 ######################
 ## Overlay Graph
 ######################
 graph_as_image = original_image.copy()
-for edge, node_pair in edges_dict.items():
-    node_1, node_2 = node_pair
-    x1, y1 = node_center(node_1, nodes_dict)
-    x2, y2 = node_center(node_2, nodes_dict)
-    # draw nodes as black circles
-    radius = 25  
-    fill_color = (0, 0, 255)
-    outline_color = (0, 0, 0) 
-    thickness = 5        
-    cv2.circle(graph_as_image, (int(x1), int(y1)), radius, fill_color, -1)
-    cv2.circle(graph_as_image, (int(x1), int(y1)), radius, outline_color, thickness)
-    cv2.circle(graph_as_image, (int(x2), int(y2)), radius, fill_color, -1)
-    cv2.circle(graph_as_image, (int(x2), int(y2)), radius, outline_color, thickness)
-    # draw edges 
-    cv2.line(graph_as_image, (int(x1), int(y1)), (int(x2), int(y2)), outline_color, thickness)
+graph_as_image = overlay_graph(graph_as_image, edges_dict, nodes_dict)
+# center cropping same as original image
 graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
 graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
+# for edge, node_pair in edges_dict.items():
+#     node_1, node_2 = node_pair
+#     x1, y1 = node_center(node_1, nodes_dict)
+#     x2, y2 = node_center(node_2, nodes_dict)
+#     # draw nodes as black circles
+#     radius = 25  
+#     fill_color = (0, 0, 255)
+#     outline_color = (0, 0, 0) 
+#     thickness = 5        
+#     cv2.circle(graph_as_image, (int(x1), int(y1)), radius, fill_color, -1)
+#     cv2.circle(graph_as_image, (int(x1), int(y1)), radius, outline_color, thickness)
+#     cv2.circle(graph_as_image, (int(x2), int(y2)), radius, fill_color, -1)
+#     cv2.circle(graph_as_image, (int(x2), int(y2)), radius, outline_color, thickness)
+#     # draw edges 
+#     cv2.line(graph_as_image, (int(x1), int(y1)), (int(x2), int(y2)), outline_color, thickness)
+# graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
+# graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
 st.write("Use the slider to compare the original P&ID with the graph overlay.")
 image_comparison(
@@ -82,8 +76,7 @@ image_comparison(
 ######################
 ## Create Neo4j graph
 ######################
-# Step-1: make connection to database
-# database credentials
+# Make connection to database using database credentials
 uri = st.secrets["neo4j_uri"]
 user = st.secrets["neo4j_user"]
 password = st.secrets["neo4j_password"]
@@ -94,66 +87,8 @@ pidKG = data_base_connection.session()
 ## Develop QA system
 ######################
 
-# Get schema
 
-pidKG_schema = """
-Node properties:
-- **Symbol**
-  - `alias`: STRING Example: "symbol_11"
-  - `center_x`: INTEGER Min: 643, Max: 5216
-  - `center_y`: INTEGER Min: 644, Max: 3979
-  - `class`: INTEGER Min: 1, Max: 32
-  - `tag`: STRING Example: "SDL 101"
-- **Junction**
-  - `alias`: STRING Example: "J57"
-  - `center_x`: INTEGER Min: 643, Max: 5204
-  - `center_y`: INTEGER Min: 798, Max: 3934
-  - `class`: INTEGER Min: -999, Max: -999
-  - `tag`: STRING Example: "line_NN_515-line_NN_645"
-Relationship properties:
-
-The relationships:
-(:Symbol)-[:CONNECTED_TO]->(:Symbol)
-(:Symbol)-[:CONNECTED_TO]->(:Junction)
-(:Junction)-[:CONNECTED_TO]->(:Symbol)
-(:Junction)-[:CONNECTED_TO]->(:Junction)
-"""
-
-
-
-
-# No graph schema
-cypher_generating_model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0) # most-deterministic 
-
-
-pidKG_schema = ''' Node properties:
-- **Junction**
-  - `alias`: STRING Example: "J55"
-  - `tag`: STRING Example: "line_NN_513-line_NN_713"
-  - `class`: INTEGER Min: -999, Max: -999
-  - `center_x`: INTEGER Min: 643, Max: 5204
-  - `center_y`: INTEGER Min: 798, Max: 3934
-- **Symbol**
-  - `alias`: STRING Example: "symbol_20"
-  - `tag`: STRING Example: "OP-39294"
-  - `class`: INTEGER Min: 1, Max: 32
-  - `center_x`: INTEGER Min: 643, Max: 5216
-  - `center_y`: INTEGER Min: 644, Max: 3979
-Relationship properties:
-
-The relationships:
-(:Junction)-[:CONNECTED_TO]->(:Junction)
-(:Junction)-[:CONNECTED_TO]->(:Symbol)
-(:Symbol)-[:CONNECTED_TO]->(:Symbol)
-(:Symbol)-[:CONNECTED_TO]->(:Junction)
-
-Important Note - in graph, even though there are directions, the relationships are bidirectional.
-
-'''
-# import chromadb
-
-# chromadb.api.client.SharedSystemClient.clear_system_cache()
-
+cypher_generating_model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0) # temp = 0 -> most-deterministic 
 system_prompt_for_generating_cypher = f'''You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run. 
 Here is the schema information for the underlying graph database: {pidKG_schema}.
 Don't add any preambles, just return the correct cypher query with no further commentary.

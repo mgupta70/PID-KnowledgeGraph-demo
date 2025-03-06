@@ -168,16 +168,14 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 def run_query(query, session):
     result = session.run(query)
     return [record for record in result]
-
+##########################
 # get question from user
-# user_question = st.text_input("Enter your question: ")
-st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
-with st.expander('To see the classes of symbols - Click here'):
+##########################
+
+with st.expander('This P&ID contains 32 symbols, each labeled numerically from 1 to 32. For more info - Click here'):
     st.image('media/one_shot_symbols.png')
     
 st.write("Try asking questions related to counting or connections between symbols.")
-
-
 
 
 questions = ["What is total number of class 10 symbols?", 
@@ -201,7 +199,7 @@ if user_question:
     messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
                 SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
                 HumanMessage(f"{user_question}")]
-    cypher_generated = cypher_generating_model(messages).content #.strip()
+    cypher_generated = cypher_generating_model(messages).content
 
     
 
@@ -211,8 +209,6 @@ if user_question:
     result = run_query(cypher_generated, pidKG)
     output_text = "\n".join(str(record) for record in result)
     st.text_area("Query Results", output_text, height=100)
-    # for record in result:
-    #     st.write(record)
 
 
 

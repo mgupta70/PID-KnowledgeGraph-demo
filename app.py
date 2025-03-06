@@ -31,9 +31,10 @@ nodes_dict = load_pickle(nodes_path)
 from neo4j import GraphDatabase
 # Step-1: make connection to database
 # database credentials
-uri = "bolt://localhost:7687"
-auth = ("neo4j", "password")
-data_base_connection = GraphDatabase.driver(uri = uri, auth=auth) 
+uri = st.secrets["neo4j_uri"]
+user = st.secrets["neo4j_user"]
+password = st.secrets["neo4j_password"]
+data_base_connection = GraphDatabase.driver(uri = uri, auth = (user, password)) 
 pidKG = data_base_connection.session() 
 
 # Step-2: create nodes

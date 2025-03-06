@@ -93,17 +93,17 @@ with st.expander("For more info on symbols representation - Click here"):
     
 st.write("Try asking questions related to counting or connections between symbols. While asking question ensure that you use the class number of the symbols as their names.")
 sample_questions = ["What is total number of class 10 symbols?", 
-             "Count the number of 10 symbols that are directly connected to 18 symbols",
+             "Count the number of class 10 symbols that are directly connected to class 18 symbols",
              "Are class 11 and class 28 symbols connected to one another?.", 
              "What are the tags of class 12 symbols?",
              "Can you determine if symbols of class 10 are situated between those of class 4 and class 12?",
              ]
 
 # Let the user select or enter a custom question
-user_question = st.selectbox("See example questions or enter your own:", ["I want to a add a question"] + sample_questions)
+user_question = st.selectbox("See example questions or enter your own:", ["I want to add a question"] + sample_questions)
 
 # If the user wants to enter a question, show a text input field
-if user_question == "I want to a add a question":
+if user_question == "I want to add a question":
     col1, col2 = st.columns([1, 6])
     with col2:
         annotated_text(("Enter your question:", "", "#fea"))
@@ -134,11 +134,6 @@ if user_question:
         output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
         st.text_area("Query Results", output_text, height=100)
         
-    # result = run_query(cypher_generated, pidKG)
-    # output_text = "\n".join(str(record) for record in result)
-    # st.text_area("Query Results", output_text, height=100)
-
-    
 st.markdown("""
     <div style="
         position: fixed;

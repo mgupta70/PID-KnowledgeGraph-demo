@@ -11,6 +11,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import OpenAIEmbeddings
 from streamlit_image_comparison import image_comparison
+from annotated_text import annotated_text
 from helpers import *
 from qa_system import *
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
@@ -48,6 +49,7 @@ graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 #####################
 ## Display Images
 #####################
+annotated_text("Use the", ("slider"), " to compare the original P&ID with the graph overlay.")
 st.write("Use the slider to compare the original P&ID with the graph overlay.")
 image_comparison(
     img1=image,

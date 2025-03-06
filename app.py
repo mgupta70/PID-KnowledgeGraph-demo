@@ -102,12 +102,51 @@ sample_questions = ["What is total number of class 10 symbols?",
 # Let the user select or enter a custom question
 user_question = st.selectbox("See example questions or enter your own:", ["I want to a add a question"] + sample_questions)
 
-# If the user selects "Enter a new question...", show a text input field
-if user_question == "I want to a add a question":
-    col1, col2 = st.columns([1, 6])
-    with col2:
-        annotated_text(("Enter your question:", "", "#fea"))
-        user_question = st.text_input("")
+# # If the user wants to enter a question, show a text input field
+# if user_question == "I want to a add a question":
+#     col1, col2 = st.columns([1, 6])
+#     with col2:
+#         annotated_text(("Enter your question:", "", "#fea"))
+#         user_question = st.text_input("")
+
+# if user_question:
+#     # select few-shot examples dynamically
+#     selected_fewshot_examples = example_selector.select_examples({"question": user_question})
+#     # pass the user question and few-shot examples to the model
+#     messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
+#                 SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
+#                 HumanMessage(f"{user_question}")]
+#     # generate cypher query
+#     cypher_generated = cypher_generating_model(messages).content
+#     st.write(f"User query converted to: {cypher_generated}")
+#     # run the generated cypher query on the graph
+#     try:
+#         result = run_query(cypher_generated, pidKG)
+#         output_text = "\n".join(str(record) for record in result)
+#         if output_text is not None:
+#             st.text_area("Query Results", output_text, height=100)
+#         else:
+#             output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
+#             st.text_area("Query Results", output_text, height=100)
+#     except Exception as e:
+#         output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
+#         st.text_area("Query Results", output_text, height=100)
+        
+#     # result = run_query(cypher_generated, pidKG)
+#     # output_text = "\n".join(str(record) for record in result)
+#     # st.text_area("Query Results", output_text, height=100)
+
+graph = Neo4jGraph(
+    url=st.secrets["neo4j_uri"],
+    username=st.secrets["neo4j_user"],
+    password=st.secrets["neo4j_password"],
+    enhanced_schema=True,
+)
+
+from langchain.chains import GraphCypherQAChain
+chain = GraphCypherQAChain.from_llm(cypher_generating_model, graph=graph, verbose=True, allow_dangerous_requests=True)
+
+
 
 if user_question:
     # select few-shot examples dynamically
@@ -121,13 +160,15 @@ if user_question:
     st.write(f"User query converted to: {cypher_generated}")
     # run the generated cypher query on the graph
     try:
-        result = run_query(cypher_generated, pidKG)
-        output_text = "\n".join(str(record) for record in result)
-        if output_text is not None:
-            st.text_area("Query Results", output_text, height=100)
-        else:
-            output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
-            st.text_area("Query Results", output_text, height=100)
+        result = chain.run(cypher_generated)
+        st.text_area("Query Results", result, height=100)
+        # result = run_query(cypher_generated, pidKG)
+        # output_text = "\n".join(str(record) for record in result)
+        # if output_text is not None:
+        #     st.text_area("Query Results", output_text, height=100)
+        # else:
+        #     output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
+        #     st.text_area("Query Results", output_text, height=100)
     except Exception as e:
         output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
         st.text_area("Query Results", output_text, height=100)
@@ -137,9 +178,7 @@ if user_question:
     # st.text_area("Query Results", output_text, height=100)
 
 
-# st.markdown("""
-#         <h10 style="text-align: center; position: fixed; bottom: 3rem;">Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo"> Github</a> </h10>""",
-#         unsafe_allow_html=True)
+    
     
 st.markdown("""
     <div style="
@@ -152,7 +191,7 @@ st.markdown("""
         padding: 10px;
         box-shadow: 0px -2px 5px rgba(0,0,0,0.1);
     ">
-        Enjoyed this demo? Drop a ⭐ on my GitHub! on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo" target="_blank">GitHub</a>
+        Enjoyed this demo on P&IDs? Drop a ⭐ on my GitHub and I will make more! on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo" target="_blank">GitHub</a>
     </div>
     """,
     unsafe_allow_html=True)

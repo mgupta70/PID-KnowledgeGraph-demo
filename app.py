@@ -104,8 +104,8 @@ user_question = st.selectbox("See example questions or enter your own:", ["I wan
 
 # If the user selects "Enter a new question...", show a text input field
 if user_question == "I want to a add a question":
-    
-    user_question = st.text_input(annotated_text("Enter your question:", ""))
+    annotated_text("Enter your question:", "")
+    user_question = st.text_input()
 
 if user_question:
     # select few-shot examples dynamically

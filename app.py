@@ -139,11 +139,14 @@ def run_query(query, session):
 st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
 st.write("Try asking questions related to counting or connections between symbols.")
 questions = ["What is total number of class 10 symbols?", 
-          "Are class 11 and class 28 symbols connected to one another?.", 
-          "What are the tags of class 12 symbols?"]
+             "Count the number of 10 symbols that are directly connected to 18 symbols"
+             "Are class 11 and class 28 symbols connected to one another?.", 
+             "What are the tags of class 12 symbols?",
+             "Can you determine if symbols of class 10 are situated between those of class 4 and class 12?",
+             ]
 
 # Let the user select or enter a custom question
-user_question = st.selectbox("Select a question or enter your own:", ["Enter a new question..."] + questions)
+user_question = st.selectbox("See example questions or enter your own:", ["Enter a new question..."] + questions)
 
 # If the user selects "Enter a new question...", show a text input field
 if user_question == "Enter a new question...":

@@ -106,7 +106,7 @@ user_question = st.selectbox("See example questions or enter your own:", ["I wan
 if user_question == "I want to a add a question":
     col1, col2 = st.columns([1, 6])
     with col2:
-        annotated_text(("Enter your question:", ""))
+        annotated_text(("Enter your question:", "", "#fea"))
         user_question = st.text_input("")
 
 if user_question:

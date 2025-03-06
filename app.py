@@ -151,7 +151,7 @@ if user_question:
     
     result = run_query(cypher_generated, pidKG)
     output_text = "\n".join(str(record) for record in result)
-    st.text_area("Query Results", output_text, height=200)
+    st.text_area("Query Results", output_text, height=20)
     # for record in result:
     #     st.write(record)
 

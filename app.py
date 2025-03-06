@@ -1,17 +1,17 @@
-# __import__('pysqlite3')
-# import sys
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 import os
-# import cv2
+import cv2
 import numpy as np
 from pathlib import Path
-# import matplotlib.pyplot as plt
 
 from helpers import *
 from few_shot import examples
 import streamlit as st
-
+from langchain_community.graphs import Neo4jGraph 
+from langchain_community.vectorstores import FAISS
+from langchain_core.example_selectors import SemanticSimilarityExampleSelector
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_openai import OpenAIEmbeddings
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
 #############
@@ -19,7 +19,7 @@ os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 #############
 # 1. Load image
 image_path = Path('data/0.jpg')
-# image = cv2.imread(str(image_path))
+image = cv2.imread(str(image_path))
 
 # 2. Load nodes and edges data
 # edges
@@ -30,68 +30,30 @@ edges_dict = load_pickle(edges_path)
 nodes_path = Path('data/0_refined_nodes_dict.pkl')
 nodes_dict = load_pickle(nodes_path)
 
+col1, col2 = st.columns(2)
+with col1:
+    st.image(image, caption='Original P&ID', use_column_width=True)
+with col2:
+    nx_graph = cv2.imread('media/KG_networkx.png')
+    st.image(nx_graph, caption='Geometrically Aligned Graph using networkx', use_column_width=True)
+
+
 ######################
 ## Create Neo4j graph
 ######################
 from neo4j import GraphDatabase
 # Step-1: make connection to database
 # database credentials
-
-# neo4j_uri = "neo4j+s://128f61f2.databases.neo4j.io"
-# neo4j_user = "neo4j"
-# neo4j_password = "fWEZN4do9eaDk-RDEaaCMTccSc1PEF_h4cwefuR_tD4"
-
-# uri = neo4j_uri
-# user = neo4j_user
-# password = neo4j_password
-
 uri = st.secrets["neo4j_uri"]
 user = st.secrets["neo4j_user"]
 password = st.secrets["neo4j_password"]
 data_base_connection = GraphDatabase.driver(uri = uri, auth = (user, password)) 
 pidKG = data_base_connection.session() 
 
-# # Step-2: create nodes
-# nodes_to_add = []
-# for edge, node_pair in edges_dict.items():
-#     for node in node_pair:
-#         if node not in nodes_to_add:
-#             if node.startswith('J'):
-#                 node_type = 'Junction'
-#             else:
-#                 node_type = 'Symbol'
-#             center_x, center_y = node_center(node, nodes_dict)
-#             _, class_name, tag = nodes_dict[node]
-#             pidKG.run(
-#                 f"CREATE (n:{node_type} {{class: {class_name}, tag: '{tag}', center_x: {center_x}, center_y: {center_y}, alias: '{node}'}})"
-#             )
-#             nodes_to_add.append(node)
-            
-# # Step-3: create edges
-# # Note: this step could be combined with the Step-2. But there can be chances that some nodes are not created and
-# # we are trying to create edges between them. So, it is better to create nodes first and then create edges.
-
-# for edge, node_pair in edges_dict.items():
-#     node1, node2 = node_pair
-#     pidKG.run(
-#         "MATCH (n1), (n2) WHERE n1.alias = $n1_alias AND n2.alias = $n2_alias CREATE (n1)-[:CONNECTED_TO]->(n2)",
-#         n1_alias=node1, n2_alias=node2
-#     )
-
-# Note: directions above are arbitrary because arrows are not shown on the given P&ID. 
-# However, Neo4j requires a direction for each edge so we have chosen an arbitrary direction.
-# In later stage, when querying into the Graph, we can ignore the direction of the edge.
-
 ######################
 ## Develop QA system
 ######################
-from langchain_community.graphs import Neo4jGraph #-> Old but works # New: from langchain_neo4j import Neo4jGraph (I found new to be troublesome for me)
-# from langchain_chroma import Chroma
-from langchain_community.vectorstores import FAISS
-from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_openai import OpenAIEmbeddings
+
 # Get schema
 
 pidKG_schema = """

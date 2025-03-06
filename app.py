@@ -15,15 +15,21 @@ from langchain_openai import OpenAIEmbeddings
 from streamlit_image_comparison import image_comparison
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stImageComparison"] div[role="slider"] {
+        background-color: red !important;  /* Change to desired color */
+        border: 2px solid black !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 st.set_page_config(page_title="PIDQA")
 st.title("P&ID QA System")
-
-def desaturate_image(img, saturation_scale=0.5):
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
-    hsv[:, :, 1] = (hsv[:, :, 1] * saturation_scale).astype('uint8')  # Reduce saturation  
-    desaturated_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)  
-    return desaturated_img
 
 #############
 ## Load data
@@ -33,7 +39,7 @@ image_path = Path('data/0.jpg')
 original_image = cv2.imread(str(image_path))
 image = crop_image(original_image, 400, 5500, 400, 4200)
 image = (image > 200).astype(np.uint8)*255
-image2 = desaturate_image(image)
+
 
 # 2. Load nodes and edges data
 # edges

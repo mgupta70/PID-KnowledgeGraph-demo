@@ -1,0 +1,11 @@
+langchain_chroma==0.2.2
+langchain_community==0.3.19
+langchain_core==0.3.41
+langchain_openai==0.3.7
+matplotlib==3.10.1
+neo4j==5.27.0
+numpy==2.2.3
+opencv_contrib_python==4.10.0.84
+opencv_python==4.7.0.72
+opencv_python_headless==4.10.0.84
+streamlit==1.36.0

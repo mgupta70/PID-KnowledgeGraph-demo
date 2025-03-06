@@ -46,7 +46,7 @@ def set_bg_hack(main_bg):
          unsafe_allow_html=True
      )
     
-set_bg_hack("media/KG_neo4j.png")
+set_bg_hack("media/KG_neo4j_h.png")
 
 
 

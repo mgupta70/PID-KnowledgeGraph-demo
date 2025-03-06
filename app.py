@@ -15,17 +15,6 @@ from langchain_openai import OpenAIEmbeddings
 from streamlit_image_comparison import image_comparison
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
-st.markdown(
-    """
-    <style>
-    div[data-testid="stImageComparison"] div[role="slider"] {
-        background-color: red !important;  /* Change to desired color */
-        border: 2px solid black !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 
 st.set_page_config(page_title="PIDQA")

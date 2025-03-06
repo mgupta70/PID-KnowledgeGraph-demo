@@ -135,11 +135,11 @@ def run_query(query, session):
     return [record for record in result]
 
 # get question from user
-user_question = st.text_input("Enter your question: ")
+# user_question = st.text_input("Enter your question: ")
 
-questions = ["What is the connection between X and Y?", 
-          "Find all components linked to Z.", 
-          "List all paths between A and B."]
+questions = ["What is total number of class 10 symbols?", 
+          "Are class 11 and class 8 symbols connected to one another?.", 
+          "What are the tags of class 12 symbols?"]
 
 # Let the user select or enter a custom question
 user_question = st.selectbox("Select a question or enter your own:", ["Enter a new question..."] + questions)

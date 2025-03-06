@@ -10,10 +10,10 @@ The included **RAG process image** visually represents how retrieval and generat
 <!-- ![rag](./media/RAG.png)  -->
 <img src="./media/RAG.png" alt="rag" width="500" />
 
-Step1: User asks a question
-Step2: LLM converts the user question into a SQL/Cypher syntax
-Step3: The generated Cypher syntax is executed on the Graph DB. Response is returned to LLM
-Step4: LLM transforms the response in more human-readable format
+1. Step1: User asks a question
+2. Step2: LLM converts the user question into a SQL/Cypher syntax
+3. Step3: The generated Cypher syntax is executed on the Graph DB. Response is returned to LLM
+4. Step4: LLM transforms the response in more human-readable format
 
 ### Applications in Civil Engineering & Process Industry
 - **Automated code compliance checks**  

@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 from pathlib import Path
 from neo4j import GraphDatabase
-from few_shot import examples
 import streamlit as st
 from langchain_community.graphs import Neo4jGraph 
 from langchain_community.vectorstores import FAISS
@@ -83,9 +82,7 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
     k=3, # number of examples to produce.
 )
 
-def run_query(query, session):
-    result = session.run(query)
-    return [record for record in result]
+
 
 ##########################
 # get question from user

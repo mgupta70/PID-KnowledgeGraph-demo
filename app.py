@@ -1,6 +1,6 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import os
 # import cv2
@@ -36,6 +36,14 @@ nodes_dict = load_pickle(nodes_path)
 from neo4j import GraphDatabase
 # Step-1: make connection to database
 # database credentials
+
+# neo4j_uri = "neo4j+s://128f61f2.databases.neo4j.io"
+# neo4j_user = "neo4j"
+# neo4j_password = "fWEZN4do9eaDk-RDEaaCMTccSc1PEF_h4cwefuR_tD4"
+
+# uri = neo4j_uri
+# user = neo4j_user
+# password = neo4j_password
 
 uri = st.secrets["neo4j_uri"]
 user = st.secrets["neo4j_user"]
@@ -79,6 +87,7 @@ pidKG = data_base_connection.session()
 ######################
 from langchain_community.graphs import Neo4jGraph #-> Old but works # New: from langchain_neo4j import Neo4jGraph (I found new to be troublesome for me)
 from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -139,6 +148,9 @@ The relationships:
 Important Note - in graph, even though there are directions, the relationships are bidirectional.
 
 '''
+# import chromadb
+
+# chromadb.api.client.SharedSystemClient.clear_system_cache()
 
 system_prompt_for_generating_cypher = f'''You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run. 
 Here is the schema information for the underlying graph database: {pidKG_schema}.
@@ -148,7 +160,7 @@ Output the final Cypher query only.'''
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples, # examples to select from
     OpenAIEmbeddings(), # embedding class to produce embeddings to measure semantic similarity.
-    Chroma, # VectorStore class that is used to store the embeddings
+    FAISS, # Chroma (old): VectorStore class that is used to store the embeddings
     k=2, # number of examples to produce.
 
 )

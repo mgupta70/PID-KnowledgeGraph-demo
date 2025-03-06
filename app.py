@@ -152,7 +152,7 @@ st.markdown("""
         padding: 10px;
         box-shadow: 0px -2px 5px rgba(0,0,0,0.1);
     ">
-        Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo" target="_blank">GitHub</a>
+        Enjoyed this demo? Drop a ⭐ on my GitHub! on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo" target="_blank">GitHub</a>
     </div>
     """,
     unsafe_allow_html=True)

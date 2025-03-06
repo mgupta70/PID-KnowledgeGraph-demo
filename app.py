@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 from pathlib import Path
-
+from neo4j import GraphDatabase
 from helpers import *
 from few_shot import examples
 import streamlit as st
@@ -20,6 +20,8 @@ os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 # 1. Load image
 image_path = Path('data/0.jpg')
 image = cv2.imread(str(image_path))
+image = crop_image(image, 400, 5500, 400, 4200)
+image = (image > 200).astype(np.uint8)*255
 
 # 2. Load nodes and edges data
 # edges
@@ -42,7 +44,6 @@ with col2:
 ######################
 ## Create Neo4j graph
 ######################
-from neo4j import GraphDatabase
 # Step-1: make connection to database
 # database credentials
 uri = st.secrets["neo4j_uri"]

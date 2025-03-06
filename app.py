@@ -86,7 +86,7 @@ pidKG = data_base_connection.session()
 ## Develop QA system
 ######################
 from langchain_community.graphs import Neo4jGraph #-> Old but works # New: from langchain_neo4j import Neo4jGraph (I found new to be troublesome for me)
-from langchain_chroma import Chroma
+# from langchain_chroma import Chroma
 from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_openai import ChatOpenAI

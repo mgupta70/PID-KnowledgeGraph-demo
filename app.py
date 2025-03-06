@@ -12,6 +12,7 @@ from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import OpenAIEmbeddings
+from streamlit_image_comparison import image_comparison
 os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
 #############
@@ -40,6 +41,10 @@ with col2:
     nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
     nx_graph = cv2.flip(nx_graph, 0)
     st.image(nx_graph, caption='Geometrically Aligned Graph using networkx')
+image_comparison(
+    img1=image,
+    img2=nx_graph,
+)
 
 
 ######################

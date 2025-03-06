@@ -7,3 +7,4 @@ numpy
 streamlit==1.41.1
 faiss-cpu
 opencv-python-headless
+streamlit_image_comparison

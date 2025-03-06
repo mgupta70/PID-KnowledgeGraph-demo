@@ -43,27 +43,12 @@ nodes_dict = load_pickle(Path('data/0_refined_nodes_dict.pkl'))
 ######################
 graph_as_image = original_image.copy()
 graph_as_image = overlay_graph(graph_as_image, edges_dict, nodes_dict)
-# center cropping same as original image
 graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
 graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
-# for edge, node_pair in edges_dict.items():
-#     node_1, node_2 = node_pair
-#     x1, y1 = node_center(node_1, nodes_dict)
-#     x2, y2 = node_center(node_2, nodes_dict)
-#     # draw nodes as black circles
-#     radius = 25  
-#     fill_color = (0, 0, 255)
-#     outline_color = (0, 0, 0) 
-#     thickness = 5        
-#     cv2.circle(graph_as_image, (int(x1), int(y1)), radius, fill_color, -1)
-#     cv2.circle(graph_as_image, (int(x1), int(y1)), radius, outline_color, thickness)
-#     cv2.circle(graph_as_image, (int(x2), int(y2)), radius, fill_color, -1)
-#     cv2.circle(graph_as_image, (int(x2), int(y2)), radius, outline_color, thickness)
-#     # draw edges 
-#     cv2.line(graph_as_image, (int(x1), int(y1)), (int(x2), int(y2)), outline_color, thickness)
-# graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
-# graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
+#####################
+## Display Images
+#####################
 st.write("Use the slider to compare the original P&ID with the graph overlay.")
 image_comparison(
     img1=image,
@@ -71,7 +56,6 @@ image_comparison(
     label1="Original P&ID",
     label2="Graph Overlay",
 )
-
 
 ######################
 ## Create Neo4j graph
@@ -86,8 +70,6 @@ pidKG = data_base_connection.session()
 ######################
 ## Develop QA system
 ######################
-
-
 cypher_generating_model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0) # temp = 0 -> most-deterministic 
 system_prompt_for_generating_cypher = f'''You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run. 
 Here is the schema information for the underlying graph database: {pidKG_schema}.
@@ -98,13 +80,13 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples, # examples to select from
     OpenAIEmbeddings(), # embedding class to produce embeddings to measure semantic similarity.
     FAISS, # Chroma (old): VectorStore class that is used to store the embeddings
-    k=5, # number of examples to produce.
-
+    k=3, # number of examples to produce.
 )
 
 def run_query(query, session):
     result = session.run(query)
     return [record for record in result]
+
 ##########################
 # get question from user
 ##########################
@@ -114,9 +96,7 @@ with st.expander("For more info on symbols representation - Click here"):
     st.image('media/one_shot_symbols.png')
     
 st.write("Try asking questions related to counting or connections between symbols. While asking question ensure that you use the class number of the symbols as their names.")
-
-
-questions = ["What is total number of class 10 symbols?", 
+sample_questions = ["What is total number of class 10 symbols?", 
              "Count the number of 10 symbols that are directly connected to 18 symbols",
              "Are class 11 and class 28 symbols connected to one another?.", 
              "What are the tags of class 12 symbols?",
@@ -124,26 +104,23 @@ questions = ["What is total number of class 10 symbols?",
              ]
 
 # Let the user select or enter a custom question
-user_question = st.selectbox("See example questions or enter your own:", ["Enter a new question..."] + questions)
+user_question = st.selectbox("See example questions or enter your own:", ["Enter a new question..."] + sample_questions)
 
 # If the user selects "Enter a new question...", show a text input field
 if user_question == "Enter a new question...":
     user_question = st.text_input("Enter your question:")
 
-
 if user_question:
+    # select few-shot examples dynamically
     selected_fewshot_examples = example_selector.select_examples({"question": user_question})
-
+    # pass the user question and few-shot examples to the model
     messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
                 SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
                 HumanMessage(f"{user_question}")]
+    # generate cypher query
     cypher_generated = cypher_generating_model(messages).content
-
-    
-
     st.write(f"User query converted to: {cypher_generated}")
-    # run query
-    
+    # run the generated cypher query on the graph
     result = run_query(cypher_generated, pidKG)
     output_text = "\n".join(str(record) for record in result)
     st.text_area("Query Results", output_text, height=100)

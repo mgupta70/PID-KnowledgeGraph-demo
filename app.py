@@ -171,8 +171,8 @@ def run_query(query, session):
 ##########################
 # get question from user
 ##########################
-
-with st.expander('This P&ID contains 32 symbols, each labeled numerically from 1 to 32. For more info - Click here'):
+st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
+with st.expander("For more info on symbols representation - Click here"):
     st.image('media/one_shot_symbols.png')
     
 st.write("Try asking questions related to counting or connections between symbols.")

@@ -128,18 +128,28 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 
 )
 
+def run_query(query, session):
+    result = session.run(query)
+    return [record for record in result]
+
 # get question from user
 user_question = st.text_input("Enter your question: ")
 
+if user_question:
+    selected_fewshot_examples = example_selector.select_examples({"question": user_question})
 
-selected_fewshot_examples = example_selector.select_examples({"question": user_question})
+    messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
+                SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
+                HumanMessage(f"{user_question}")]
+    cypher_generated = cypher_generating_model(messages).content #.strip()
 
-messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
-            SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
-            HumanMessage(f"{user_question}")]
-cypher_generated = cypher_generating_model(messages).content #.strip()
+    st.write(f"User query converted to: {cypher_generated}.\nResult:")
 
-st.write(f"User query converted to: {cypher_generated}.\nResult:")
+    # run query
+    result = run_query(cypher_generated, pidKG)
+    for record in result:
+        st.write(record)
 
-    
+
+
     

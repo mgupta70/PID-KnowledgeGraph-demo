@@ -137,6 +137,18 @@ def run_query(query, session):
 # get question from user
 user_question = st.text_input("Enter your question: ")
 
+questions = ["What is the connection between X and Y?", 
+          "Find all components linked to Z.", 
+          "List all paths between A and B."]
+
+# Let the user select or enter a custom question
+user_question = st.selectbox("Select a question or enter your own:", ["Enter a new question..."] + questions)
+
+# If the user selects "Enter a new question...", show a text input field
+if user_question == "Enter a new question...":
+    user_question = st.text_input("Enter your question:")
+
+
 if user_question:
     selected_fewshot_examples = example_selector.select_examples({"question": user_question})
 
@@ -145,19 +157,7 @@ if user_question:
                 HumanMessage(f"{user_question}")]
     cypher_generated = cypher_generating_model(messages).content #.strip()
 
-    #
-    questions = ["What is the connection between X and Y?", 
-             "Find all components linked to Z.", 
-             "List all paths between A and B."]
-
-    # Let the user select or enter a custom question
-    selected_question = st.selectbox("Select a question or enter your own:", ["Enter a new question..."] + questions)
-
-    # If the user selects "Enter a new question...", show a text input field
-    if selected_question == "Enter a new question...":
-        selected_question = st.text_input("Enter your question:")
-
-    #
+    
 
     st.write(f"User query converted to: {cypher_generated}.")
     st.write("Results:")

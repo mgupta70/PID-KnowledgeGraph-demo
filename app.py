@@ -137,7 +137,22 @@ if user_question:
     # st.text_area("Query Results", output_text, height=100)
 
 
-st.markdown("""
-        <h10 style="text-align: left; position: fixed; bottom: 3rem;">Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo"> Github</a> </h10>""",
-        unsafe_allow_html=True)
+# st.markdown("""
+#         <h10 style="text-align: center; position: fixed; bottom: 3rem;">Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo"> Github</a> </h10>""",
+#         unsafe_allow_html=True)
     
+st.markdown("""
+    <div style="
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        text-align: center;
+        padding: 10px;
+        box-shadow: 0px -2px 5px rgba(0,0,0,0.1);
+    ">
+        Give a ⭐ on <a href="https://github.com/mgupta70/PID-KnowledgeGraph-demo" target="_blank">GitHub</a>
+    </div>
+    """,
+    unsafe_allow_html=True)

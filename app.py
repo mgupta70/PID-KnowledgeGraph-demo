@@ -1,4 +1,5 @@
-import os, cv2
+import os
+# import cv2
 import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 #############
 # 1. Load image
 image_path = Path('data/0.jpg')
-image = cv2.imread(str(image_path))
+# image = cv2.imread(str(image_path))
 
 # 2. Load nodes and edges data
 # edges

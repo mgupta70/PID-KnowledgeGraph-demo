@@ -5,3 +5,4 @@ langchain_openai==0.3.7
 neo4j==5.27.0
 numpy
 streamlit==1.41.1
+faiss-cpu

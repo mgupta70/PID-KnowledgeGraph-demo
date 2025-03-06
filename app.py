@@ -172,8 +172,8 @@ def run_query(query, session):
 # get question from user
 # user_question = st.text_input("Enter your question: ")
 st.write("This P&ID contains 32 symbols, each labeled numerically from 1 to 32.")
-with st.expander('Select a sensor to analyse. For more information - Click here'):
-    st.image('media/KG_networkx.png', caption='Sensor Information')
+with st.expander('To see the classes of symbols - Click here'):
+    st.image('media/one_shot_symbols.png')
     
 st.write("Try asking questions related to counting or connections between symbols.")
 

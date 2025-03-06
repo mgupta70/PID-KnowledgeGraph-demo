@@ -32,10 +32,11 @@ nodes_dict = load_pickle(nodes_path)
 
 col1, col2 = st.columns(2)
 with col1:
-    st.image(image, caption='Original P&ID', use_column_width=True)
+    st.image(image, caption='Original P&ID', use_container_width =True)
 with col2:
     nx_graph = cv2.imread('media/KG_networkx.png')
-    st.image(nx_graph, caption='Geometrically Aligned Graph using networkx', use_column_width=True)
+    nx_graph = cv2.cvtColor(nx_graph, cv2.COLOR_BGR2RGB)
+    st.image(nx_graph, caption='Geometrically Aligned Graph using networkx', use_container_width=True)
 
 
 ######################
@@ -137,7 +138,8 @@ messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
             SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
             HumanMessage(f"{user_question}")]
 cypher_generated = cypher_generating_model(messages).content #.strip()
-print(cypher_generated)
-st.write(cypher_generated)
+
+st.write(f"User query converted to: {cypher_generated}.\nResult:")
+
     
     

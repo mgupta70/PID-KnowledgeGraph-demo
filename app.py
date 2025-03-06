@@ -19,7 +19,7 @@ import base64
 #############
 ## Page Set up
 #############
-st.set_page_config(page_title="PIDQA", page_icon=":bulb:", layout="wide")
+st.set_page_config(page_title="PIDQA", page_icon=":bulb:")
 st.title("P&ID QA System")
 # set_bg_hack("media/KG_neo4j_h.png")
 #############

@@ -62,6 +62,8 @@ user = st.secrets["neo4j_user"]
 password = st.secrets["neo4j_password"]
 data_base_connection = GraphDatabase.driver(uri = uri, auth = (user, password)) 
 pidKG = data_base_connection.session() 
+pidKG_schema = st.secrets["pidKG_schema"]
+examples = st.secrets["examples"]
 
 ######################
 ## Develop QA system

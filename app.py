@@ -116,7 +116,8 @@ if user_question:
                 HumanMessage(f"{user_question}")]
     # generate cypher query
     cypher_generated = cypher_generating_model(messages).content
-    st.write(f"User query converted to: {cypher_generated}")
+    st.write("Generating cypher query to execute on the graph and answer your question...")
+    # st.write(f"User query converted to: {cypher_generated}")
     # run the generated cypher query on the graph
     try:
         result = run_query(cypher_generated, pidKG)

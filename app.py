@@ -92,7 +92,7 @@ with st.expander("For more info on symbols representation - Click here"):
 st.write("Try asking questions related to counting or connections between symbols. While asking question ensure that you use the class number of the symbols as their names.")
 sample_questions = ["What is total number of class 10 symbols?", 
              "Count the number of class 10 symbols that are directly connected to class 18 symbols",
-             "Are class 11 and class 28 symbols connected to one another?.", 
+             "Are class 11 and class 28 symbols connected to one another?", 
              "What are the tags of class 12 symbols?",
              "Can you determine if symbols of class 10 are situated between those of class 4 and class 12?",
              ]

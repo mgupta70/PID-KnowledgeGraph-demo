@@ -50,7 +50,7 @@ image_comparison(
     img1=image,
     img2=graph_as_image,
     label1="Original P&ID",
-    label2="Graph Overlay",
+    label2="P&ID + Graph Overlay",
 )
 
 ######################

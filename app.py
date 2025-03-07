@@ -29,7 +29,7 @@ st.title("P&ID QA System")
 # Image
 image_path = Path('data/0.png')
 original_image = cv2.imread(str(image_path))
-image = crop_image(original_image, 350, 3250, 800, 2800)
+image = crop_image(original_image, 350, 3250, 800, 3200)
 image = (image > 200).astype(np.uint8)*255
 
 
@@ -38,7 +38,8 @@ image = (image > 200).astype(np.uint8)*255
 ######################
 graph_as_image_path = Path('data/0_graph.png')
 graph_as_image = cv2.imread(str(graph_as_image_path))
-graph_as_image = crop_image(graph_as_image, 250, 3250, 800, 2800)
+graph_as_image = cv2.cvtColor(graph_as_image, cv2.COLOR_BGR2RGB)
+graph_as_image = crop_image(graph_as_image, 250, 3250, 800, 3200)
 graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
 #####################

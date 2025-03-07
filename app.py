@@ -139,7 +139,7 @@ if user_question:
 # Footer
 st.markdown(
     '''
-    :man-raising-hand: Drop an email with your feedback or suggestions to add more features related to P&ID QA System via email...  :email: Contact me at : mgupta70@asu.edu || [Mohit Gupta](https://mgupta70.github.io), Ph.D., Arizona State University
+    :man-raising-hand: Drop an email with your feedback or suggestion for more useful more features related to P&ID processing ...  :email: Contact me at : mgupta70@asu.edu ([Mohit Gupta](https://mgupta70.github.io), Ph.D., Arizona State University)
     '''
 )
 

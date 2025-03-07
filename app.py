@@ -135,6 +135,14 @@ if user_question:
         output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
         st.text_area("Query Results", output_text, height=100)
         
+
+# Footer
+st.markdown(
+    '''
+    :man-raising-hand: Drop an email with your feedback or suggestions to add more features related to P&ID QA System via email...  :email: Contact me at : mgupta70@asu.edu || [Mohit Gupta](https://mgupta70.github.io), Ph.D., Arizona State University
+    '''
+)
+
 st.markdown("""
     <div style="
         position: fixed;

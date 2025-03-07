@@ -27,23 +27,18 @@ st.title("P&ID QA System")
 ## Load data
 #############
 # Image
-image_path = Path('data/0.jpg')
+image_path = Path('data/0.png')
 original_image = cv2.imread(str(image_path))
-image = crop_image(original_image, 400, 5500, 400, 4200)
+image = crop_image(original_image, 350, 3250, 800, 2800)
 image = (image > 200).astype(np.uint8)*255
 
-# Edges data
-edges_dict = load_pickle(Path('data/0_refined_edges_dict.pkl'))
-
-# Nodes data
-nodes_dict = load_pickle(Path('data/0_refined_nodes_dict.pkl'))
 
 ######################
 ## Overlay Graph
 ######################
-graph_as_image = original_image.copy()
-graph_as_image = overlay_graph(graph_as_image, edges_dict, nodes_dict)
-graph_as_image = crop_image(graph_as_image, 400, 5500, 400, 4200)
+graph_as_image_path = Path('data/0_graph.png')
+graph_as_image = cv2.imread(str(graph_as_image_path))
+graph_as_image = crop_image(graph_as_image, 250, 3250, 800, 2800)
 graph_as_image = (graph_as_image > 200).astype(np.uint8)*255
 
 #####################

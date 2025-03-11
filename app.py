@@ -109,9 +109,10 @@ if user_question == "I want to add a question":
 
 if user_question:
     # guardrail
-    message_g = [HumanMessage(f"Check if the Question asked by user : {user_question} relates to Piping and Instrumentation knowledge graph which has database schema as {pidKG_schema}. Output 1 if it does and 0 if it does not.")]
+    message_g = [HumanMessage(f"Check if the Question asked by user : {user_question} relates to Piping and Instrumentation Diagram whose graph which has database schema as {pidKG_schema}. Output 1 if it does and 0 if it does not.")]
     response_g = cypher_generating_model(message_g).content
-    if response_g == "0":
+    st.write(f"Response: {response_g}")
+    if response_g in  ["0", 0]:
         st.write("The question asked is not related to the Piping and Instrumentation knowledge graph.")
     else:
 

@@ -108,32 +108,39 @@ if user_question == "I want to add a question":
         user_question = st.text_input("")
 
 if user_question:
-    # select few-shot examples dynamically
-    selected_fewshot_examples = example_selector.select_examples({"question": user_question})
-    # pass the user question and few-shot examples to the model
-    messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
-                SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
-                HumanMessage(f"{user_question}")]
-    # generate cypher query
-    cypher_generated = cypher_generating_model(messages).content
-    st.write("Generating cypher query to execute on the graph and answer your question...")
-    
-    ##############################################
-    # Run the generated cypher query on the graph
-    ##############################################
-    try:
-        result = run_query(cypher_generated, pidKG)
-        output_text = "\n".join(str(record) for record in result)
-        qa_messages = [HumanMessage(f"Question is {user_question} and the answer by running cypher query is {result}: Generate a human readable answer for the question.")]
-        response = cypher_generating_model(qa_messages).content # llm is same as cypher_generating_model
-        if output_text is not None:
-            st.text_area("Query Results", response, height=100)
-        else:
+    # guardrail
+    message_g = [HumanMessage(f"Check if the Question asked by user : {user_question} relates to Piping and Instrumentation knowledge graph which has database schema as {pidKG_schema}. Output 1 if it does and 0 if it does not.")]
+    response_g = cypher_generating_model(message_g).content
+    if response_g == "0":
+        st.write("The question asked is not related to the Piping and Instrumentation knowledge graph.")
+    else:
+
+        # select few-shot examples dynamically
+        selected_fewshot_examples = example_selector.select_examples({"question": user_question})
+        # pass the user question and few-shot examples to the model
+        messages = [SystemMessage(f"{system_prompt_for_generating_cypher}"),
+                    SystemMessage(f"Here is few examples of questions and their corresponding Cypher queries: {selected_fewshot_examples}."),
+                    HumanMessage(f"{user_question}")]
+        # generate cypher query
+        cypher_generated = cypher_generating_model(messages).content
+        st.write("Generating cypher query to execute on the graph and answer your question...")
+        
+        ##############################################
+        # Run the generated cypher query on the graph
+        ##############################################
+        try:
+            result = run_query(cypher_generated, pidKG)
+            output_text = "\n".join(str(record) for record in result)
+            qa_messages = [HumanMessage(f"Question is {user_question} and the answer by running cypher query is {result}: Generate a human readable answer for the question.")]
+            response = cypher_generating_model(qa_messages).content # llm is same as cypher_generating_model
+            if output_text is not None:
+                st.text_area("Query Results", response, height=100)
+            else:
+                output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
+                st.text_area("Query Results", output_text, height=100)
+        except Exception as e:
             output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
             st.text_area("Query Results", output_text, height=100)
-    except Exception as e:
-        output_text = "Unable to get the results! Maybe the question is not right or is out-of-scope.If you think the question is valid, please try rephrasing it."
-        st.text_area("Query Results", output_text, height=100)
         
 
 # Footer

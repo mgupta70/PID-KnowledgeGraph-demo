@@ -112,10 +112,11 @@ if user_question:
     message_g = [SystemMessage("Check if the Question asked by user talks about symbols or classes of symbols. Questions can be about number of symbols, types of symbols, connections between symbols - all related to piping and instrumentation diagrams. Output 1 if the question is about symbols else output 0. Don't add any preambles, just return the 0 or 1 with no further commentary."),
                  HumanMessage(f"{user_question}")]
     response_g = cypher_generating_model(message_g).content
-    st.write(f"Response: {response_g}")
+    
     if response_g in  ["0", 0]:
         st.write("The question asked is not related to the Piping and Instrumentation knowledge graph.")
     else:
+        st.write("Generating response...")
 
         # select few-shot examples dynamically
         selected_fewshot_examples = example_selector.select_examples({"question": user_question})

@@ -109,7 +109,7 @@ if user_question == "I want to add a question":
 
 if user_question:
     # guardrail
-    message_g = [HumanMessage(f"Check if the Question asked by user : {user_question} relates to Piping and Instrumentation Diagram whose graph which has database schema as {pidKG_schema}. Output 1 if it does and 0 if it does not.")]
+    message_g = [HumanMessage(f"Check if the Question asked by user talks about symbols or classes of symbols. Output 1 if it does and 0 if it does not. Questions can be about number of symbols, types of symbols, connections between symbols - all related to piping and instrumentation diagrams.")]
     response_g = cypher_generating_model(message_g).content
     st.write(f"Response: {response_g}")
     if response_g in  ["0", 0]:
